@@ -13,6 +13,7 @@ using Eigen::VectorXd;
 class UKF {
 public:
 
+
   ///* initially set to false, set to true in first call of ProcessMeasurement
   bool is_initialized_;
 
@@ -23,22 +24,22 @@ public:
   bool use_radar_;
 
   ///* state vector: [pos1 pos2 vel_abs yaw_angle yaw_rate] in SI units and rad
-  VectorXd x_;
+  Eigen::DenseBase<Eigen::Matrix<double, -1, 1, 0, -1, 1>>::SegmentReturnType x_;
 
   ///* state covariance matrix
   MatrixXd P_;
 
   ///* predicted sigma points matrix
-  MatrixXd Xsig_pred_;
+  static MatrixXd Xsig_pred_;
 
   ///* time when the state is true, in us
   long long time_us_;
 
   ///* Process noise standard deviation longitudinal acceleration in m/s^2
-  double std_a_;
+  static double std_a_;
 
   ///* Process noise standard deviation yaw acceleration in rad/s^2
-  double std_yawdd_;
+  static double std_yawdd_;
 
   ///* Laser measurement noise standard deviation position1 in m
   double std_laspx_;
@@ -66,6 +67,22 @@ public:
 
   ///* Sigma point spreading parameter
   double lambda_;
+
+  /// number of sigma points
+  int n_sig_;
+
+  /// laser measurement noise covariance matrix
+  MatrixXd R_laser;
+
+  /// radar measurement noise covariance matrix
+  MatrixXd R_radar;
+
+  /// current NIS for laser
+  double NIS_radar;
+
+  /// current NIS for radar
+  double NIS_laser;
+
 
 
   /**
@@ -102,6 +119,7 @@ public:
    * @param meas_package The measurement at k+1
    */
   void UpdateRadar(MeasurementPackage meas_package);
+
 };
 
 #endif /* UKF_H */
