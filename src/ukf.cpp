@@ -95,10 +95,26 @@ UKF::UKF() {
  * @param phi The input angle from radar measurement
  * @return
  */
+/// hanging my computer
+/*
 static long NormalizePhiAngle (long phi) {
   while (phi >= M_PI) phi -= 2. * M_PI;
   while (phi < M_PI) phi += 2. * M_PI;
 
+  return phi;
+}
+*/
+
+/// new method from forum mentor driveWell
+static double NormalizePhiAngle(double phi) {
+  if (phi > M_PI) {
+    double temp = fmod((phi - M_PI), (2 * M_PI)); // -= 2. * M_PI;
+    phi = temp - M_PI;
+  } // phi normalization
+  if (phi < -M_PI) {
+    double temp = fmod((phi + M_PI) ,(2 * M_PI));
+    phi = temp + M_PI;
+  }
   return phi;
 }
 
@@ -188,6 +204,9 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
       cout << "Initialized x_: " << x_ << endl;
 
 
+      /// grab timestamp in ultra-low seconds (us)
+      time_us_ = meas_package.timestamp_ ; // Without this it stops after 1 step?? oops!
+
       /// finished initialization;
       is_initialized = true;
       cout << "initialized is now true" << endl;
@@ -197,17 +216,18 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
   }
 
   /// Initialize the timestamp
+  cout << "Initialize the timestamp" << endl;
   double dt = (meas_package.timestamp_ - time_us_) / 1000000.0;
   time_us_ = meas_package.timestamp_;
   Prediction(dt);
 
 
   if (meas_package.sensor_type_ == MeasurementPackage::RADAR && use_radar_ == true) {
-    cout << "Update Radar" << endl;
+    cout << "Update Radar line 223" << endl;
     UpdateRadar(meas_package);
   }
   if (meas_package.sensor_type_ == MeasurementPackage::LASER && use_laser_ == true) {
-    cout << "Update laser" << endl;
+    cout << "Update laser line 227" << endl;
     UpdateLidar(meas_package);
   }
 
@@ -221,6 +241,10 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
  * measurement and this one.
  */
   void UKF::Prediction(double delta_t) {
+
+  /*****************************************************************************
+  *  PREDICTION
+  ****************************************************************************/
 
   /// estimate object location??
 
@@ -273,6 +297,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
   for (int i = 0; i < n_sig_; i++) // iterate sigma points
   {
     /// calculate the state difference each column
+    cout << "Xsig_pred is :" << Xsig_pred << endl;
     VectorXd x_diff = Xsig_pred.col(i) - x_; // create vector to use below
 
     cout << "Before: " << x_diff(3) << endl;
@@ -308,9 +333,12 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
   You'll also need to calculate the lidar NIS.
   */
 
+  cout << "Start laser update" << endl;
+
   /// set measurement prediction Matrix
   int n_z = 2; // px and py
   MatrixXd Zsig = Xsig_pred.block(0, 0, n_z, n_sig_);
+  cout << "Set the measurement pred matrix" << endl;
 
   /// initialize mean predicted measurement
   VectorXd z_pred = VectorXd(n_z);
@@ -318,6 +346,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
   for (int i = 0; i < n_sig_; i++) {
     z_pred = z_pred + weights_(i) * Zsig.col(i);
   }
+  cout << "initialized the mean prediction measurement" << endl;
 
   /// initialize measurement covariance Matrix
   MatrixXd S = MatrixXd(n_z, n_z);
@@ -330,6 +359,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
     /// covariance formula again
     S = S + weights_(i) * z_diff * z_diff.transpose();
   }
+  cout << "Set the measurement covariance Matrix (laser)" << endl;
 
   /// add measurement noise covariance Matrix (Tc)
   S = S + R_laser_;
@@ -342,6 +372,8 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
   /// create matrix for cross validation Tc
   MatrixXd Tc = MatrixXd(n_x_, n_z);
 
+  cout << "grabbed laser measurement and cross val Mat Tc (laser)" << endl;
+
   Tc.fill(0.0); // populate blank template
   for (long i = 0; i < n_sig_; i++) { // 2n + 1 sigma points
 
@@ -353,8 +385,9 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 
     /// add in the noise!!
     Tc = Tc + weights_(i) * x_diff * z_diff.transpose();
-
   }
+
+  cout << "calculated residual/diff/noise in the loop" << endl;
 
   /// Kalman gain
   MatrixXd K = Tc * S.inverse();
@@ -368,6 +401,8 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 
   /// NIS laser
   NIS_laser_ = z_diff.transpose() * S.inverse() * z_diff;
+
+  cout << "Finished update (laser)" << endl;
 
 }
 
@@ -569,6 +604,8 @@ MatrixXd UKF::PredictSigmaPoints(MatrixXd Xsig, double delta_t, int n_x, int n_s
  *  @param n_sig: Sigma points dimension.
  */
 MatrixXd UKF::GenerateSigmaPoints(VectorXd x, MatrixXd P, double lambda, int n_sig) {
+
+  cout << "Begin to generate sigma points" << endl;
 
   /// create sigma point matrix
   MatrixXd Xsig = MatrixXd( x.size(), n_sig );
