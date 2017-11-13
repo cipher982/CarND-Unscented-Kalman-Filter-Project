@@ -15,7 +15,7 @@ public:
 
 
   ///* initially set to false, set to true in first call of ProcessMeasurement
-  bool is_initialized_;
+  bool is_initialized;
 
   ///* if this is false, laser measurements will be ignored (except for init)
   bool use_laser_;
@@ -24,22 +24,22 @@ public:
   bool use_radar_;
 
   ///* state vector: [pos1 pos2 vel_abs yaw_angle yaw_rate] in SI units and rad
-  Eigen::DenseBase<Eigen::Matrix<double, -1, 1, 0, -1, 1>>::SegmentReturnType x_;
+  VectorXd x_;
 
   ///* state covariance matrix
   MatrixXd P_;
 
   ///* predicted sigma points matrix
-  static MatrixXd Xsig_pred_;
+  MatrixXd Xsig_pred;
 
   ///* time when the state is true, in us
   long long time_us_;
 
   ///* Process noise standard deviation longitudinal acceleration in m/s^2
-  static double std_a_;
+  double std_a_;
 
   ///* Process noise standard deviation yaw acceleration in rad/s^2
-  static double std_yawdd_;
+  double std_yawdd_;
 
   ///* Laser measurement noise standard deviation position1 in m
   double std_laspx_;
@@ -72,20 +72,24 @@ public:
   int n_sig_;
 
   /// laser measurement noise covariance matrix
-  MatrixXd R_laser;
+  MatrixXd R_laser_;
 
   /// radar measurement noise covariance matrix
-  MatrixXd R_radar;
+  MatrixXd R_radar_;
 
   /// current NIS for laser
-  double NIS_radar;
+  double NIS_radar_;
 
   /// current NIS for radar
-  double NIS_laser;
+  double NIS_laser_;
+
+  MatrixXd PredictSigmaPoints(MatrixXd Xsig, double delta_t, int n_x, int n_sig, double nu_am, double nu_yawdd);
+
+  MatrixXd GenerateSigmaPoints(VectorXd x, MatrixXd P, double lambda, int n_sig);
 
 
 
-  /**
+    /**
    * Constructor
    */
   UKF();

@@ -111,98 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named src
+# Target rules for targets named UnscentedKF
 
 # Build rule for target.
-src: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 src
-.PHONY : src
+UnscentedKF: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 UnscentedKF
+.PHONY : UnscentedKF
 
 # fast build rule for target.
-src/fast:
-	$(MAKE) -f CMakeFiles/src.dir/build.make CMakeFiles/src.dir/build
-.PHONY : src/fast
-
-main.o: main.cpp.o
-
-.PHONY : main.o
-
-# target to build an object file
-main.cpp.o:
-	$(MAKE) -f CMakeFiles/src.dir/build.make CMakeFiles/src.dir/main.cpp.o
-.PHONY : main.cpp.o
-
-main.i: main.cpp.i
-
-.PHONY : main.i
-
-# target to preprocess a source file
-main.cpp.i:
-	$(MAKE) -f CMakeFiles/src.dir/build.make CMakeFiles/src.dir/main.cpp.i
-.PHONY : main.cpp.i
-
-main.s: main.cpp.s
-
-.PHONY : main.s
-
-# target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) -f CMakeFiles/src.dir/build.make CMakeFiles/src.dir/main.cpp.s
-.PHONY : main.cpp.s
-
-tools.o: tools.cpp.o
-
-.PHONY : tools.o
-
-# target to build an object file
-tools.cpp.o:
-	$(MAKE) -f CMakeFiles/src.dir/build.make CMakeFiles/src.dir/tools.cpp.o
-.PHONY : tools.cpp.o
-
-tools.i: tools.cpp.i
-
-.PHONY : tools.i
-
-# target to preprocess a source file
-tools.cpp.i:
-	$(MAKE) -f CMakeFiles/src.dir/build.make CMakeFiles/src.dir/tools.cpp.i
-.PHONY : tools.cpp.i
-
-tools.s: tools.cpp.s
-
-.PHONY : tools.s
-
-# target to generate assembly for a file
-tools.cpp.s:
-	$(MAKE) -f CMakeFiles/src.dir/build.make CMakeFiles/src.dir/tools.cpp.s
-.PHONY : tools.cpp.s
-
-ukf.o: ukf.cpp.o
-
-.PHONY : ukf.o
-
-# target to build an object file
-ukf.cpp.o:
-	$(MAKE) -f CMakeFiles/src.dir/build.make CMakeFiles/src.dir/ukf.cpp.o
-.PHONY : ukf.cpp.o
-
-ukf.i: ukf.cpp.i
-
-.PHONY : ukf.i
-
-# target to preprocess a source file
-ukf.cpp.i:
-	$(MAKE) -f CMakeFiles/src.dir/build.make CMakeFiles/src.dir/ukf.cpp.i
-.PHONY : ukf.cpp.i
-
-ukf.s: ukf.cpp.s
-
-.PHONY : ukf.s
-
-# target to generate assembly for a file
-ukf.cpp.s:
-	$(MAKE) -f CMakeFiles/src.dir/build.make CMakeFiles/src.dir/ukf.cpp.s
-.PHONY : ukf.cpp.s
+UnscentedKF/fast:
+	$(MAKE) -f CMakeFiles/UnscentedKF.dir/build.make CMakeFiles/UnscentedKF.dir/build
+.PHONY : UnscentedKF/fast
 
 # Help Target
 help:
@@ -212,16 +131,7 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... src"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
-	@echo "... tools.o"
-	@echo "... tools.i"
-	@echo "... tools.s"
-	@echo "... ukf.o"
-	@echo "... ukf.i"
-	@echo "... ukf.s"
+	@echo "... UnscentedKF"
 .PHONY : help
 
 
